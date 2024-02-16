@@ -352,6 +352,7 @@ function drawGame() {
     cameraPosition = Math.round(monke[0].x - canvas.width / 2 + monke[0].width / 2)
     drawMonke();
     drawBlock();
+    console.log('hello world');
 };
 
 setInterval(drawGame, 16);
