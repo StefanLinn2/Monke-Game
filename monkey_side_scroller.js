@@ -16,18 +16,25 @@ graphics.onload = function () {
 }
 
 let pressedKeys = {};
-let lastKeyPressed = null;
+let currentKeyDown = [];
 
 document.addEventListener('keydown', function (event) {
     pressedKeys[event.key] = true;
-    lastKeyPressed = event.key;
+    if (!currentKeyDown.includes(event.key)) {
+        currentKeyDown.push(event.key);
+    }
 });
 document.addEventListener('keyup', function (event) {
     pressedKeys[event.key] = false;
-    if (lastKeyPressed === event.key) {
-        lastKeyPressed = null;
+    let retainedKeyDown = []
+    for (let i = 0; i < currentKeyDown.length; i++) {
+        if (currentKeyDown[i] !== event.key) {
+            retainedKeyDown.push(currentKeyDown[i]);
+        }
     }
+    currentKeyDown = retainedKeyDown;
 });
+
 canvas.addEventListener('mousedown', function (event) {
     console.log(event.offsetX + cameraPosition, event.offsetY);
 });
@@ -114,11 +121,17 @@ function updateMonke() {
             resolveYCollision(monke[i]);
 
             if (monke[i].left && monke[i].right) {
-                if (lastKeyPressed === 'd') {
+                if (currentKeyDown[currentKeyDown.length - 1] === 'd' ||
+                    (currentKeyDown[currentKeyDown.length - 1] === 'w' &&
+                        currentKeyDown[currentKeyDown.length - 2] === 'd')) {
+                    monke[i].left = false;
                     monke[i].dx += monke[i].speed;
                     monke[i].loggedFacingDirection = 'right';
                 } else
-                    if (lastKeyPressed === 'a') {
+                    if (currentKeyDown[currentKeyDown.length - 1] === 'a' ||
+                        (currentKeyDown[currentKeyDown.length - 1] === 'w' &&
+                            currentKeyDown[currentKeyDown.length - 2] === 'a')) {
+                        monke[i].right = false;
                         monke[i].dx -= monke[i].speed;
                         monke[i].loggedFacingDirection = 'left';
                     }
@@ -295,15 +308,6 @@ function drawMonke() {
 
         if (monke[i].loggedFacingDirection === null) {
             drawNeutralMonkeImage(roundedPosition, monke[i]);
-        }
-
-        if (monke[i].left && monke[i].right) {
-            if (lastKeyPressed === 'a') {
-                drawLeftWalkingMonke(roundedPosition, monke[i]);
-            } else if (lastKeyPressed === 'd') {
-                drawRightWalkingMonke(roundedPosition, monke[i]);
-            }
-            //fix bug when jumping
         } else if (monke[i].right && !monke[i].left && monke[i].onGround) {
             drawRightWalkingMonke(roundedPosition, monke[i]);
         } else if (monke[i].loggedFacingDirection === 'right' && monke[i].onGround) {
