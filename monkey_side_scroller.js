@@ -80,11 +80,7 @@ let monke = [
         down: false,
         speed: 1.5,
         friction: 0.75,
-        choreography: [
-            { direction: 'right', duration: 40 },
-            { direction: 'left', duration: 45 },
-        ]
-        ,
+        choreography: generateRandomChoreography(1000),
         bananasCollected: 0,
         isAlive: true,
         controller: readAIChoreography,
@@ -392,7 +388,6 @@ function readAIChoreography(robot) {
     let totalActionTime = 0;
     for (let i = 0; i < robot.choreography.length; i++) {
         let currentChoreography = robot.choreography[currentIndex];
-        console.log(currentChoreography);
         updateControlsForAI(robot, currentChoreography);
         totalActionTime += currentChoreography.duration;
         if (inGameTime - totalActionTime >= currentChoreography.duration) {
@@ -408,6 +403,20 @@ function readAIChoreography(robot) {
             }
         }
     }
+}
+
+function generateRandomChoreography(numInstructions){
+    let directions = ['right', 'left', 'up', 'down'];
+    let minDuration = 1;
+    let maxDuration = 10;
+    let choreography = [];
+    for (let i = 0; i< numInstructions; i++){
+        directionIndex = Math.floor(Math.random() * directions.length);
+        selectedDirection = directions[directionIndex];
+        let selectedDuration = Math.floor(Math.random() * (maxDuration - minDuration + 1))
+        choreography.push({ direction: selectedDirection, duration: selectedDuration })
+    }
+    return choreography;
 }
 
 function drawGame() {
