@@ -61,10 +61,33 @@ let monke = [
         down: false,
         speed: 1.5,
         friction: 0.75,
-        controller: null,
         bananasCollected: 0,
         isAlive: true,
         controller: updateControlsForHuman,
+        loggedFacingDirection: null,
+    },
+    {
+        x: 0,
+        y: 0,
+        width: 32,
+        height: 48,
+        dx: 0,
+        dy: 0,
+        onGround: false,
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+        speed: 1.5,
+        friction: 0.75,
+        choreography: [
+            { direction: 'right', duration: 40 },
+            { direction: 'left', duration: 45 },
+        ]
+        ,
+        bananasCollected: 0,
+        isAlive: true,
+        controller: readAIChoreography,
         loggedFacingDirection: null,
     },
 ]
@@ -342,6 +365,49 @@ function updateControlsForHuman(player) {
     player.left = pressedKeys['a'];
     player.up = pressedKeys['w'];
     player.down = pressedKeys['s'];
+}
+
+function updateControlsForAI(robot, currentChoreography) {
+    if (!currentChoreography) return;
+    robot.right = false;
+    robot.left = false;
+    robot.up = false;
+    robot.down = false;
+    if (currentChoreography.direction === 'right') {
+        robot.right = true;
+    }
+    if (currentChoreography.direction === 'left') {
+        robot.left = true;
+    }
+    if (currentChoreography.direction === 'up') {
+        robot.up = true;
+    }
+    if (currentChoreography.direction === 'down') {
+        robot.down = true;
+    }
+}
+
+function readAIChoreography(robot) {
+    let currentIndex = 0;
+    let totalActionTime = 0;
+    for (let i = 0; i < robot.choreography.length; i++) {
+        let currentChoreography = robot.choreography[currentIndex];
+        console.log(currentChoreography);
+        updateControlsForAI(robot, currentChoreography);
+        totalActionTime += currentChoreography.duration;
+        if (inGameTime - totalActionTime >= currentChoreography.duration) {
+            if (currentIndex === robot.choreography.length - 1) {
+                robot.up = false;
+                robot.down = false;
+                robot.right = false;
+                robot.left = false;
+                break;
+            } else {
+                currentIndex++;
+                totalActionTime += currentChoreography.duration;
+            }
+        }
+    }
 }
 
 function drawGame() {
