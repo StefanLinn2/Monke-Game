@@ -36,14 +36,22 @@ document.addEventListener('keyup', function (event) {
 });
 
 canvas.addEventListener('mousedown', function (event) {
-    console.log(event.offsetX + cameraPosition, event.offsetY);
+    if (editMode) {
+        let gridSize = 30;
+        let xGrid = Math.floor((event.offsetX + cameraPosition) / gridSize) * gridSize;
+        let yGrid = Math.floor(event.offsetY / gridSize) * gridSize;
+        block.push({ x: xGrid, y: yGrid, width: gridSize, height: gridSize });
+        console.log(event.offsetX + cameraPosition, event.offsetY, xGrid, yGrid);
+    } else {
+        console.log(event.offsetX + cameraPosition, event.offsetY);
+    }
 });
 tile_canvas.addEventListener('mousedown', function (event) {
     console.log('tile click')
 });
 
 let inGameTime = 0;
-let edit_mode = true;
+let editMode = true;
 let gravity = 0.5;
 
 let monke = [
@@ -345,9 +353,14 @@ function drawMonke() {
 
 let block = [
     { x: -30, y: 0, width: 30, height: canvas.height },
-    { x: 0, y: 570, width: 700, height: 60 },
-    { x: 1350, y: 570, width: 200, height: 60 },
+    { x: 0, y: 570, width: 600, height: 30 },
+    { x: 1200, y: 570, width: 200, height: 30 },
+    { x: 660, y: 480, width: 30, height: 30 },
+    { x: 780, y: 420, width: 30, height: 30 },
+    { x: 900, y: 420, width: 30, height: 30 },
+    { x: 1020, y: 420, width: 30, height: 30 },
 ]
+
 
 function drawBlock() {
     for (i = 0; i < block.length; i++) {
@@ -405,12 +418,12 @@ function readAIChoreography(robot) {
     }
 }
 
-function generateRandomChoreography(numInstructions){
+function generateRandomChoreography(numInstructions) {
     let directions = ['right', 'left', 'up', 'down'];
     let minDuration = 1;
     let maxDuration = 10;
     let choreography = [];
-    for (let i = 0; i< numInstructions; i++){
+    for (let i = 0; i < numInstructions; i++) {
         directionIndex = Math.floor(Math.random() * directions.length);
         selectedDirection = directions[directionIndex];
         let selectedDuration = Math.floor(Math.random() * (maxDuration - minDuration + 1))
