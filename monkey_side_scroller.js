@@ -96,6 +96,32 @@ let monke = [
     },
 ]
 
+for (let i = 0; i < 1; i++) {
+    monke.push(
+        {
+            x: 0,
+            y: 0,
+            width: 32,
+            height: 48,
+            dx: 0,
+            dy: 0,
+            onGround: false,
+            left: false,
+            right: false,
+            up: false,
+            down: false,
+            speed: 1.5,
+            friction: 0.75,
+            choreography: generateRandomChoreography(1000),
+            bananasCollected: 0,
+            isAlive: true,
+            controller: readAIChoreography,
+            loggedFacingDirection: null,
+        }
+    )
+}
+
+
 function collisionCheck(area1, area2) {
     return (
         area1.x + area1.width > area2.x &&
@@ -182,9 +208,13 @@ function updateMonke() {
             if (monke[i].y < 0) {
                 monke[i].y = monke[i].dy = 0;
             }
-            if (monke[i].y > canvas.height) {
+            if (monke[i].y > canvas.height + monke[i].height) {
                 monke[i].y = canvas.height;
                 monke[i].isAlive = false;
+                monke[i].right = false;
+                monke[i].left = false;
+                monke[i].up = false;
+                monke[i].down = false;
             }
         }
 
@@ -424,8 +454,8 @@ function generateRandomChoreography(numInstructions) {
     let maxDuration = 10;
     let choreography = [];
     for (let i = 0; i < numInstructions; i++) {
-        directionIndex = Math.floor(Math.random() * directions.length);
-        selectedDirection = directions[directionIndex];
+        let directionIndex = Math.floor(Math.random() * directions.length);
+        let selectedDirection = directions[directionIndex];
         let selectedDuration = Math.floor(Math.random() * (maxDuration - minDuration + 1))
         choreography.push({ direction: selectedDirection, duration: selectedDuration })
     }
