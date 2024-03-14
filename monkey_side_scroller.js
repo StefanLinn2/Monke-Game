@@ -162,6 +162,18 @@ function resolveYCollision(char) {
     }
 }
 
+function findRightMostMonkey() {
+    let maxIndex = -1;
+    let maxX = -Infinity;
+    for (let i = 0; i < monke.length; i++) {
+        if (monke[i].x > maxX && monke[i].isAlive) {
+            maxX = monke[i].x;
+            maxIndex = i;
+        }
+    }
+    return { index: maxIndex, x: maxX }
+}
+let trainingLoopDuration = 10;
 function updateMonke() {
     for (i = 0; i < monke.length; i++) {
         if (monke[i].isAlive) {
@@ -217,6 +229,10 @@ function updateMonke() {
                 monke[i].down = false;
             }
         }
+    }
+    if (inGameTime / 60 === trainingLoopDuration){
+        let {index, x} = findRightMostMonkey();
+        console.log(`the right most monkey is ${index} with x position ${x}`);
     }
 }
 
