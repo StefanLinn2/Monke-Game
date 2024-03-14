@@ -96,30 +96,30 @@ let monke = [
     },
 ]
 
-for (let i = 0; i < 1000; i++) {
-    monke.push(
-        {
-            x: 0,
-            y: 0,
-            width: 32,
-            height: 48,
-            dx: 0,
-            dy: 0,
-            onGround: false,
-            left: false,
-            right: false,
-            up: false,
-            down: false,
-            speed: 1.5,
-            friction: 0.75,
-            choreography: generateRandomChoreography(1000),
-            bananasCollected: 0,
-            isAlive: true,
-            controller: readAIChoreography,
-            loggedFacingDirection: null,
-        }
-    )
-}
+// for (let i = 0; i < 1000; i++) {
+//     monke.push(
+//         {
+//             x: 0,
+//             y: 0,
+//             width: 32,
+//             height: 48,
+//             dx: 0,
+//             dy: 0,
+//             onGround: false,
+//             left: false,
+//             right: false,
+//             up: false,
+//             down: false,
+//             speed: 1.5,
+//             friction: 0.75,
+//             choreography: generateRandomChoreography(1000),
+//             bananasCollected: 0,
+//             isAlive: true,
+//             controller: readAIChoreography,
+//             loggedFacingDirection: null,
+//         }
+//     )
+// }
 
 
 function collisionCheck(area1, area2) {
@@ -444,10 +444,11 @@ function readAIChoreography(robot) {
     let totalActionTime = 0;
     for (let i = 0; i < robot.choreography.length; i++) {
         totalActionTime += robot.choreography[i].duration;
-        if (inGameTime >= totalActionTime) {
-            updateControlsForAI(robot, robot.choreography[i])
-        } else {
-            break
+        console.log(inGameTime, totalActionTime, i);
+        if (totalActionTime >= inGameTime) {
+            updateControlsForAI(robot, robot.choreography[i]);
+            console.log('update control ran');
+            break;
         }
         if (i === robot.choreography.length - 1) {
             robot.up = false;
