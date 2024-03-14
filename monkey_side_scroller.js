@@ -96,7 +96,7 @@ let monke = [
     },
 ]
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 1000; i++) {
     monke.push(
         {
             x: 0,
@@ -217,7 +217,6 @@ function updateMonke() {
                 monke[i].down = false;
             }
         }
-
     }
 }
 
@@ -407,7 +406,6 @@ function updateControlsForHuman(player) {
 }
 
 function updateControlsForAI(robot, currentChoreography) {
-    if (!currentChoreography) return;
     robot.right = false;
     robot.left = false;
     robot.up = false;
@@ -427,26 +425,23 @@ function updateControlsForAI(robot, currentChoreography) {
 }
 
 function readAIChoreography(robot) {
-    let currentIndex = 0;
     let totalActionTime = 0;
     for (let i = 0; i < robot.choreography.length; i++) {
-        let currentChoreography = robot.choreography[currentIndex];
-        updateControlsForAI(robot, currentChoreography);
-        totalActionTime += currentChoreography.duration;
-        if (inGameTime - totalActionTime >= currentChoreography.duration) {
-            if (currentIndex === robot.choreography.length - 1) {
-                robot.up = false;
-                robot.down = false;
-                robot.right = false;
-                robot.left = false;
-                break;
-            } else {
-                currentIndex++;
-                totalActionTime += currentChoreography.duration;
-            }
+        totalActionTime += robot.choreography[i].duration;
+        if (inGameTime >= totalActionTime) {
+            updateControlsForAI(robot, robot.choreography[i])
+        } else {
+            break
+        }
+        if (i === robot.choreography.length - 1) {
+            robot.up = false;
+            robot.down = false;
+            robot.right = false;
+            robot.left = false;
         }
     }
 }
+
 
 function generateRandomChoreography(numInstructions) {
     let directions = ['right', 'left', 'up', 'down'];
@@ -456,7 +451,7 @@ function generateRandomChoreography(numInstructions) {
     for (let i = 0; i < numInstructions; i++) {
         let directionIndex = Math.floor(Math.random() * directions.length);
         let selectedDirection = directions[directionIndex];
-        let selectedDuration = Math.floor(Math.random() * (maxDuration - minDuration + 1))
+        let selectedDuration = Math.floor(Math.random() * (maxDuration - minDuration + 1) + 1)
         choreography.push({ direction: selectedDirection, duration: selectedDuration })
     }
     return choreography;
