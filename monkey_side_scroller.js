@@ -444,10 +444,8 @@ function readAIChoreography(robot) {
     let totalActionTime = 0;
     for (let i = 0; i < robot.choreography.length; i++) {
         totalActionTime += robot.choreography[i].duration;
-        console.log(inGameTime, totalActionTime, i);
         if (totalActionTime >= inGameTime) {
             updateControlsForAI(robot, robot.choreography[i]);
-            console.log('update control ran');
             break;
         }
         if (i === robot.choreography.length - 1) {
@@ -458,7 +456,6 @@ function readAIChoreography(robot) {
         }
     }
 }
-
 
 function generateRandomChoreography(numInstructions) {
     let directions = ['right', 'left', 'up', 'down'];
@@ -474,6 +471,13 @@ function generateRandomChoreography(numInstructions) {
     return choreography;
 }
 
+function drawGameTime(){
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "right"
+    ctx.fillText("Time: " + Math.floor(inGameTime/60) + "s", canvas.width - 10, 20);
+}
+
 function drawGame() {
     inGameTime++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -485,6 +489,7 @@ function drawGame() {
     cameraPosition = Math.round(monke[0].x - canvas.width / 2 + monke[0].width / 2)
     drawMonke();
     drawBlock();
+    drawGameTime();
 };
 
 setInterval(drawGame, 16);
