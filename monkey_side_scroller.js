@@ -6,7 +6,7 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 const graphics = new Image();
 const tile_canvas = document.createElement('canvas');
-graphics.src = "https://opengameart.org/sites/default/files/monkeylad_further.png"
+graphics.src = "./monkeylad_further.png"
 graphics.onload = function () {
     tile_canvas.width = graphics.width;
     tile_canvas.height = graphics.height;
@@ -53,6 +53,7 @@ tile_canvas.addEventListener('mousedown', function (event) {
 let inGameTime = 0;
 let editMode = true;
 let gravity = 0.5;
+let trainingSize = 1000;
 
 let monke = [
     {
@@ -96,31 +97,30 @@ let monke = [
     },
 ]
 
-// for (let i = 0; i < 1000; i++) {
-//     monke.push(
-//         {
-//             x: 0,
-//             y: 0,
-//             width: 32,
-//             height: 48,
-//             dx: 0,
-//             dy: 0,
-//             onGround: false,
-//             left: false,
-//             right: false,
-//             up: false,
-//             down: false,
-//             speed: 1.5,
-//             friction: 0.75,
-//             choreography: generateRandomChoreography(1000),
-//             bananasCollected: 0,
-//             isAlive: true,
-//             controller: readAIChoreography,
-//             loggedFacingDirection: null,
-//         }
-//     )
-// }
-
+for (let i = 0; i < trainingSize; i++) {
+    monke.push(
+        {
+            x: 0,
+            y: 0,
+            width: 32,
+            height: 48,
+            dx: 0,
+            dy: 0,
+            onGround: false,
+            left: false,
+            right: false,
+            up: false,
+            down: false,
+            speed: 1.5,
+            friction: 0.75,
+            choreography: generateRandomChoreography(1000),
+            bananasCollected: 0,
+            isAlive: true,
+            controller: readAIChoreography,
+            loggedFacingDirection: null,
+        }
+    )
+}
 
 function collisionCheck(area1, area2) {
     return (
@@ -173,7 +173,9 @@ function findRightMostMonkey() {
     }
     return { index: maxIndex, x: maxX }
 }
-let trainingLoopDuration = 10;
+
+let trainingLoopDuration = 6;
+
 function updateMonke() {
     for (i = 0; i < monke.length; i++) {
         if (monke[i].isAlive) {
@@ -233,7 +235,89 @@ function updateMonke() {
     if (inGameTime / 60 === trainingLoopDuration){
         let {index, x} = findRightMostMonkey();
         console.log(`the right most monkey is ${index} with x position ${x}`);
+        let winningChoreography = monke[index].choreography;
+        monke = [
+            {
+                x: 0,
+                y: 0,
+                width: 32,
+                height: 48,
+                dx: 0,
+                dy: 0,
+                onGround: false,
+                left: false,
+                right: false,
+                up: false,
+                down: false,
+                speed: 1.5,
+                friction: 0.75,
+                bananasCollected: 0,
+                isAlive: true,
+                controller: updateControlsForHuman,
+                loggedFacingDirection: null,
+            },
+            {
+                x: 0,
+                y: 0,
+                width: 32,
+                height: 48,
+                dx: 0,
+                dy: 0,
+                onGround: false,
+                left: false,
+                right: false,
+                up: false,
+                down: false,
+                speed: 1.5,
+                friction: 0.75,
+                choreography: winningChoreography,
+                bananasCollected: 0,
+                isAlive: true,
+                controller: readAIChoreography,
+                loggedFacingDirection: null,
+            },
+        ]
+        for (let i = 0; i < trainingSize; i++) {
+            monke.push(
+                {
+                    x: 0,
+                    y: 0,
+                    width: 32,
+                    height: 48,
+                    dx: 0,
+                    dy: 0,
+                    onGround: false,
+                    left: false,
+                    right: false,
+                    up: false,
+                    down: false,
+                    speed: 1.5,
+                    friction: 0.75,
+                    choreography: mutateChoreography(winningChoreography),
+                    bananasCollected: 0,
+                    isAlive: true,
+                    controller: readAIChoreography,
+                    loggedFacingDirection: null,
+                }
+            )
+        }
+        inGameTime = 0;
     }
+}
+
+let mutationFrequency = 0.1
+
+function mutateChoreography(oldChoreography){
+    let newChoreography = [];
+for (let i = 0; i < oldChoreography.length; i++){
+    if (Math.random() < (1 - mutationFrequency)){
+        newChoreography.push(oldChoreography[i]);
+    }
+    else {
+        newChoreography.push(generateRandomChoreography(1)[0]);
+    }
+}
+return newChoreography;
 }
 
 let monkeSpriteWalkFrames = [];
@@ -481,6 +565,8 @@ function drawGameTime(){
 function drawGame() {
     inGameTime++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00aaff';
+    ctx.fillRect(0,0,canvas.width, canvas.height);
     for (let m of monke) {
         m.controller(m);
     }
