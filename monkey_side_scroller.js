@@ -166,7 +166,7 @@ function findRightMostMonkey() {
     let maxIndex = -1;
     let maxX = -Infinity;
     for (let i = 0; i < monke.length; i++) {
-        if (monke[i].x > maxX && monke[i].isAlive) {
+        if (monke[i].x > maxX) {
             maxX = monke[i].x;
             maxIndex = i;
         }
@@ -232,9 +232,12 @@ function updateMonke() {
             }
         }
     }
-    if (inGameTime / 60 === trainingLoopDuration){
-        let {index, x} = findRightMostMonkey();
+    if (inGameTime / 60 >= trainingLoopDuration) {
+        let obj = findRightMostMonkey();
+        let index = obj.index;
+        let x = obj.x;
         console.log(`the right most monkey is ${index} with x position ${x}`);
+        trainingLoopDuration = ((x / 3) / 60);
         let winningChoreography = monke[index].choreography;
         monke = [
             {
@@ -307,17 +310,17 @@ function updateMonke() {
 
 let mutationFrequency = 0.1
 
-function mutateChoreography(oldChoreography){
+function mutateChoreography(oldChoreography) {
     let newChoreography = [];
-for (let i = 0; i < oldChoreography.length; i++){
-    if (Math.random() < (1 - mutationFrequency)){
-        newChoreography.push(oldChoreography[i]);
+    for (let i = 0; i < oldChoreography.length; i++) {
+        if (Math.random() < (1 - mutationFrequency)) {
+            newChoreography.push(oldChoreography[i]);
+        }
+        else {
+            newChoreography.push(generateRandomChoreography(1)[0]);
+        }
     }
-    else {
-        newChoreography.push(generateRandomChoreography(1)[0]);
-    }
-}
-return newChoreography;
+    return newChoreography;
 }
 
 let monkeSpriteWalkFrames = [];
@@ -481,20 +484,81 @@ function drawMonke() {
 }
 
 let block = [
-    { x: -30, y: 0, width: 30, height: canvas.height },
-    { x: 0, y: 570, width: 600, height: 30 },
-    { x: 1200, y: 570, width: 200, height: 30 },
+    { x: -30, y: 0, width: 30, height: 30 },
+    { x: -30, y: 30, width: 30, height: 30 },
+    { x: -30, y: 60, width: 30, height: 30 },
+    { x: -30, y: 90, width: 30, height: 30 },
+    { x: -30, y: 120, width: 30, height: 30 },
+    { x: -30, y: 150, width: 30, height: 30 },
+    { x: -30, y: 180, width: 30, height: 30 },
+    { x: -30, y: 210, width: 30, height: 30 },
+    { x: -30, y: 240, width: 30, height: 30 },
+    { x: -30, y: 270, width: 30, height: 30 },
+    { x: -30, y: 300, width: 30, height: 30 },
+    { x: -30, y: 330, width: 30, height: 30 },
+    { x: -30, y: 360, width: 30, height: 30 },
+    { x: -30, y: 390, width: 30, height: 30 },
+    { x: -30, y: 420, width: 30, height: 30 },
+    { x: -30, y: 450, width: 30, height: 30 },
+    { x: -30, y: 480, width: 30, height: 30 },
+    { x: -30, y: 510, width: 30, height: 30 },
+    { x: -30, y: 540, width: 30, height: 30 },
+    { x: -30, y: 570, width: 30, height: 30 },
+    { x: -30, y: 600, width: 30, height: 30 },
+    { x: 0, y: 570, width: 30, height: 30 },
+    { x: 30, y: 570, width: 30, height: 30 },
+    { x: 60, y: 570, width: 30, height: 30 },
+    { x: 90, y: 570, width: 30, height: 30 },
+    { x: 120, y: 570, width: 30, height: 30 },
+    { x: 150, y: 570, width: 30, height: 30 },
+    { x: 180, y: 570, width: 30, height: 30 },
+    { x: 210, y: 570, width: 30, height: 30 },
+    { x: 240, y: 570, width: 30, height: 30 },
+    { x: 270, y: 570, width: 30, height: 30 },
+    { x: 300, y: 570, width: 30, height: 30 },
+    { x: 330, y: 570, width: 30, height: 30 },
+    { x: 360, y: 570, width: 30, height: 30 },
+    { x: 390, y: 570, width: 30, height: 30 },
+    { x: 420, y: 570, width: 30, height: 30 },
+    { x: 450, y: 570, width: 30, height: 30 },
+    { x: 480, y: 570, width: 30, height: 30 },
+    { x: 510, y: 570, width: 30, height: 30 },
+    { x: 540, y: 570, width: 30, height: 30 },
+    { x: 570, y: 570, width: 30, height: 30 },
+    { x: 1200, y: 570, width: 30, height: 30 },
+    { x: 1230, y: 570, width: 30, height: 30 },
+    { x: 1260, y: 570, width: 30, height: 30 },
+    { x: 1290, y: 570, width: 30, height: 30 },
+    { x: 1320, y: 570, width: 30, height: 30 },
+    { x: 1350, y: 570, width: 30, height: 30 },
+    { x: 1380, y: 570, width: 30, height: 30 },
+    { x: 1410, y: 570, width: 30, height: 30 },
     { x: 660, y: 480, width: 30, height: 30 },
     { x: 780, y: 420, width: 30, height: 30 },
     { x: 900, y: 420, width: 30, height: 30 },
     { x: 1020, y: 420, width: 30, height: 30 },
 ]
 
+let blockSpriteX = 453 + 16;
+let blockSpriteY = 101 + 16;
+let blockSpriteHeight = 16;
+let blockSpriteWidth = 16;
 
 function drawBlock() {
     for (i = 0; i < block.length; i++) {
-        ctx.fillStyle = 'brown';
-        ctx.fillRect(block[i].x - cameraPosition, block[i].y, block[i].width, block[i].height)
+        //ctx.fillStyle = 'brown';
+        ctx.drawImage(
+            graphics,
+            blockSpriteX,
+            blockSpriteY,
+            blockSpriteWidth,
+            blockSpriteHeight,
+            block[i].x - cameraPosition,
+            block[i].y,
+            block[i].width,
+            block[i].height
+        )
+        //ctx.fillRect(block[i].x - cameraPosition, block[i].y, block[i].width, block[i].height)
     }
 }
 
@@ -542,7 +606,7 @@ function readAIChoreography(robot) {
 }
 
 function generateRandomChoreography(numInstructions) {
-    let directions = ['right', 'left', 'up', 'down'];
+    let directions = ['right', 'up', 'down'];
     let minDuration = 1;
     let maxDuration = 10;
     let choreography = [];
@@ -555,24 +619,28 @@ function generateRandomChoreography(numInstructions) {
     return choreography;
 }
 
-function drawGameTime(){
+function drawGameTime() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "black";
     ctx.textAlign = "right"
-    ctx.fillText("Time: " + Math.floor(inGameTime/60) + "s", canvas.width - 10, 20);
+    ctx.fillText("Time: " + Math.floor(inGameTime / 60) + "s", canvas.width - 10, 20);
 }
 
+actionsPerFrame = 1
 function drawGame() {
-    inGameTime++;
+    for (let i = 0; i < actionsPerFrame; i++) {
+        inGameTime++;
+        for (let m of monke) {
+            m.controller(m);
+        }
+        updateAnimation();
+        updateMonke();
+    }
+    let index = findRightMostMonkey().index;
+    cameraPosition = Math.round(monke[index].x - canvas.width / 2 + monke[index].width / 2)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00aaff';
-    ctx.fillRect(0,0,canvas.width, canvas.height);
-    for (let m of monke) {
-        m.controller(m);
-    }
-    updateAnimation();
-    updateMonke();
-    cameraPosition = Math.round(monke[0].x - canvas.width / 2 + monke[0].width / 2)
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     drawMonke();
     drawBlock();
     drawGameTime();
